@@ -1,4 +1,4 @@
-Server status check bash script
+Server status check script
 ===================
 
 Simple Script which check status of listed servers and if any of the servers listed are down, and rules are met - notify via email.
