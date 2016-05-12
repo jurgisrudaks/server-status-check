@@ -8,6 +8,8 @@ Simple Script which check status of listed servers and if any of the servers lis
 
 Installation
 -------------
+><b>Note:</b> following steps provided assumes that you are using Ubuntu/Debian based OS
+
 For SMTP email sending to work please run these commands:
 >sudo apt-get update && sudo apt-get install sendemail libio-socket-ssl-perl libnet-ssleay-perl perl
 
