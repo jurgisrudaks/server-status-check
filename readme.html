@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Status check | README</title>
+<link rel="stylesheet" href="https://stackedit.io/res-min/themes/base.css" />
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body><div class="container"><h1 id="server-status-check-bash-script">Server status check bash script</h1>
+
+<p>Simple Script which check status of listed servers and if any of the servers listed are down, and rules are met - notify via email.</p>
+
+<hr>
+
+
+
+<h2 id="installation">Installation</h2>
+
+<p>For SMTP email sending to work please run these commands:</p>
+
+<blockquote>
+  <p>sudo apt-get update &amp;&amp; sudo apt-get install sendemail libio-socket-ssl-perl libnet-ssleay-perl perl</p>
+</blockquote>
+
+<p>For Mailgun email sending to work please ensure you have curl installed</p>
+
+<blockquote>
+  <p>sudo apt-get update &amp;&amp; sudo apt-get install php5-curl</p>
+</blockquote>
+
+
+
+<h2 id="configuration">Configuration</h2>
+
+
+
+<h3 id="configuration-file">Configuration file</h3>
+
+<p>Configuration file is located in the extracted directory and is called <b>config.conf</b>. Configuration file is used to configure email method used for email notifications, notification frequency , etc…</p>
+
+
+
+<h4 id="general-configuration">General configuration</h4>
+
+<blockquote>
+  <p># Method to use for email sending - smtp / mailgun <br>
+  EMAIL_METHOD=mailgun</p>
+  
+  <p># General email config <br>
+  EMAIL_FROM=statuscheck@samples.mailgun.org <br>
+  EMAIL_TO=jurgis@rudaks.lv</p>
+</blockquote>
+
+<p><b>EMAIL_METHOD</b> can be <b>smtp</b> or <b>mailgun</b> <br>
+<b>EMAIL_FROM</b> defines from what email address email should be sent <br>
+<b>EMAIL_TO</b> to which email address email should be sent</p>
+
+
+
+<h3 id="configure-method-used-for-email-sending">Configure method used for email sending</h3>
+
+
+
+<h4 id="mailgun">Mailgun</h4>
+
+<blockquote>
+  <p><b>Note:</b> To use <b>Mailgun</b> for email sending make sure you have installed all prerequisites mentioned under <b>Installation</b> and that you have registered account with <a href="https://www.mailgun.com/" title="Mailgun">Mailgun email service</a> - it’s email service mostly used by developers to test and develop applications.</p>
+</blockquote>
+
+<p>In <b>config.conf</b> you will find following config keys:</p>
+
+<blockquote>
+  <p># Mailgun email config <br>
+  EMAIL_MAILGUN_API_KEY=3ax6xnjp29jd6fds4gc373sgvjxteol0 <br>
+  EMAIL_MAILGUN_DOMAIN=samples.mailgun.org</p>
+</blockquote>
+
+<p><b>EMAIL_MAILGUN_API_KEY</b> As key name already states this is the Mailgun API key which can be obtained from your Mailgun dashboard please refer to <a href="https://documentation.mailgun.com/quickstart-sending.html#send-via-api" title="Mailgun quickstart">Mailgun quickstart guide</a> for more inforamtion. <br>
+<b>EMAIL_MAILGUN_DOMAIN</b> Same as API key you can get this value from your Mailgun Dashboard refer to <a href="https://documentation.mailgun.com/quickstart-sending.html#send-via-api" title="Mailgun quickstart">Mailgun quickstart guide</a> for more information</p>
+
+
+
+<h4 id="smtp">SMTP</h4>
+
+<blockquote>
+  <p><b>Note:</b> To use SMTP for email sending make sure you have installed all prerequisites mentioned under <b>Installation</b></p>
+</blockquote>
+
+<p>In <b>config.conf</b> following configuration keys can be found for SMTP email sending.</p>
+
+<blockquote>
+  <p># SMTP email config <br>
+  # Example Google SMTP <br>
+  EMAIL_SMTP_SERVER=smtp.gmail.com:587 <br>
+  EMAIL_TLS=yes <br>
+  EMAIL_USERNAME=gmailemail <br>
+  EMAIL_PASSWORD=gmailpassword</p>
+</blockquote>
+
+<p><b>EMAIL_SMTP_SERVER</b> SMTP server address and port separated by <b>:</b> <br>
+<b>EMAIL_TLS</b> should TLS be used to encrypt connection or not - possible values <b>yes</b> / <b>no</b> <br>
+<b>EMAIL_USERNAME</b> SMTP server username <br>
+<b>EMAIL_PASSWORD</b> SMTP server password</p>
+
+
+
+<h3 id="notifications-frequency-configuration">Notifications frequency configuration</h3>
+
+<blockquote>
+  <p># After which fail we should send email <br>
+  # specify when email notification should be sent out: <br>
+  # every_nth_time - email will be sent when server have failed to respond every (nth) time <br>
+  # fail_count_reached - email will be sent when specified fail count will be reached <br>
+  NOTIFY_METHOD=fail_count_reached</p>
+  
+  <p># Only used if every_nth_time method have been specified for NOTIFY_METHOD <br>
+  # Specifies on which nth server failure email notification should be sent <br>
+  NOTIFY_EVERY_NTH_TIME=3</p>
+  
+  <p># Only used if fail_count_reached method have been specified for NOTIFY_METHOD <br>
+  # Can be an array or an integer <br>
+  # - if integer specified email will be sent out when server have failed <br>
+  # for specified times in a row <br>
+  # - If array then email will be sent out if fail count equals to any value specified in array <br>
+  # For example: <br>
+  # uncomment below line to send out email when server have not responded three times <br>
+  NOTIFY_WHEN_FAIL_COUNT=3</p>
+  
+  <p># or uncomment this line if email should be sent out if server have not responded three, nine and 18 times <br>
+  #NOTIFY_WHEN_FAIL_COUNT=(3 9 18)</p>
+</blockquote>
+
+<p><b>NOTIFY_METHOD</b> Can be <b>every_nth_time</b> or <b>fail_count_reached</b>. <b>every_nth_time</b> - email notification will be sent out every <i>nth</i> fail. <b>fail_count_reached</b> email notification will be sent when fail count reaches specified number or is equal to one of the numbers in array - if <b>NOTIFY_WHEN_FAIL_COUNT</b> is <i>array</i> <br>
+<b>NOTIFY_EVERY_NTH_TIME</b> Used only if <b>NOTIFY_METHOD</b> set to <b>every_nth_time</b> - specifies <i>nth</i> time email should be sent. <br>
+<b>NOTIFY_WHEN_FAIL_COUNT</b> Used only if <b>NOTIFY_METHOD</b> set to <b>fail_count_reached</b> - specifies fail count on which email notification should be sent.</p>
+
+<blockquote>
+  <p><b>Note:</b> more information and examples please see comments in <b>config.conf</b></p>
+</blockquote>
+
+
+
+<h3 id="configure-servers-to-be-checked">Configure servers to be checked</h3>
+
+<p>To configure which servers will be checked cd to extracted/script folder and open file <b>servers.list</b> and add your server ip/hostname in new line - for example:</p>
+
+<blockquote>
+  <p>test.server <br>
+  10.0.0.1 <br>
+  test.domain.ltd</p>
+</blockquote>
+
+
+
+<h2 id="running">Running</h2>
+
+<p>Extract the archive cd to extracted folder and run</p>
+
+<blockquote>
+  <p>./statuscheck</p>
+</blockquote>
+
+<h2 id="automation">Automation</h2>
+
+<p>To use this script to continuously check server status create cron job for it using following command</p>
+
+<blockquote>
+  <p>crontab -e</p>
+</blockquote>
+
+<p>Then you might see editor selection choose the editor you would like to use to edit cron job file <br>
+when cron job file opens add following line to run script every three minutes</p>
+
+<blockquote>
+  <p><em>/3 </em> * * * /path/to/statuscheck</p>
+</blockquote></div></body>
+</html>
