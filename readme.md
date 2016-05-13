@@ -103,7 +103,7 @@ To configure which servers will be checked cd to extracted/script folder and ope
 Running
 -------------
 Extract the archive cd to extracted folder and run
->./statuscheck
+>./statuscheck.sh
 
 Automation
 -------------
